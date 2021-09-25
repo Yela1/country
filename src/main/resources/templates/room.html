@@ -1,0 +1,70 @@
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dark Mode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+
+</head>
+
+<style>
+    body {
+        color: #404E67;
+
+        font-family: 'Open Sans', sans-serif;
+    }
+    .login-form {
+        width: 450px;
+        margin: 50px auto;
+        font-size: 15px;
+    }
+    .login-form form {
+        margin-bottom: 15px;
+        background: #fff;
+        box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        padding: 30px;
+    }
+    .login-form h2 {
+        margin: 0 0 25px;
+    }
+    .form-group{
+        margin-bottom: 20px;
+    }
+    .btn {
+        font-size: 15px;
+        font-weight: bold;
+    }
+</style>
+
+<body th:style="${room.isStatus()} == false ? 'background: #161c23' : 'background: #F5F7FA;'">
+
+
+<div class="login-form">
+    <form method="post" th:action="'/'+${room.id}" th:object="${room}">
+        <h2 class="text-center">Комната</h2>
+        <div class="form-group">
+            <dl class="row">
+                <dt class="col-sm-6">Название комнаты</dt>
+                <dd class="col-sm-6" th:text="${room.name}"></dd>
+                <dt class="col-sm-6">Код страны</dt>
+                <dd class="col-sm-6" th:text="${room.countryCode}"></dd>
+                <dt class="col-sm-6">Статус</dt>
+                <dd class="col-sm-6" th:text="${room.isStatus()} == false ? 'Выключена' : 'Включена'"></dd>
+            </dl>
+        </div>
+        <div class="form-group">
+            <button th:text="${room.isStatus()} == false ? 'Включить' : 'Выключить'"  type="submit" class="btn  btn-block  btn-outline-info add-new"></button>
+        </div>
+    </form>
+
+    <p class="text-center text-info"><a href="/">Главная Страница</a></p>
+</div>
+
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+
+</body>
+</html>

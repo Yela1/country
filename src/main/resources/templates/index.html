@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+<style>
+    body {
+        color: #404E67;
+        background: #F5F7FA;
+        font-family: 'Open Sans', sans-serif;
+    }
+    .table-wrapper {
+        width: 700px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 20px;
+        box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    }
+    .table-title {
+        padding-bottom: 10px;
+        margin: 0 0 10px;
+    }
+    .table-title h2 {
+        margin: 6px 0 0;
+        font-size: 22px;
+    }
+    .table-title .add-new {
+        float: right;
+        height: 30px;
+        font-weight: bold;
+        font-size: 12px;
+        text-shadow: none;
+        min-width: 100px;
+        border-radius: 50px;
+        line-height: 13px;
+    }
+    .table-title .add-new i {
+        margin-right: 4px;
+    }
+</style>
+<body>
+    <div class="container-lg">
+        <div class="table-responsive">
+            <div class="table-wrapper">
+                <div class="table-title">
+                    <div class="row">
+                        <div class="col-sm-8"><h2>Список <b>Комнат</b></h2></div>
+                        <div class="col-sm-4">
+                            <a href="/add"><button  type="button" class="btn btn-info add-new">Добавить Комнату</button></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:switch="${rooms}">
+                    <h2 th:case="null">No Room yet!</h2>
+                    <table th:case="*" class="table table-bordered table-striped" >
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Название команты</th>
+                            <th scope="col">Код страны</th>
+                            <th scope="col">Действие</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr  th:each="room, roomStat : ${rooms}">
+                            <th scope="row" th:text="${roomStat.count}"></th>
+                            <td><a th:href="@{${room.id}}" th:text="${room.name}"></a></td>
+                            <td><a th:href="@{${room.id}}" th:text="${room.countryCode}"></a></td>
+                            <td>
+                                <form th:object="${room}" th:action="'/delete/'+${room.id}" th:method="post">
+                                    <div class="form-group">
+                                      <button  type="submit" class="btn btn-sm  btn-block  btn-outline-danger">Удалить</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+    <script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+    <script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,81 @@
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+
+
+<style>
+    body {
+        color: #404E67;
+        background: #F5F7FA;
+        font-family: 'Open Sans', sans-serif;
+    }
+    .login-form {
+        width: 450px;
+        margin: 50px auto;
+        font-size: 15px;
+    }
+    .login-form form {
+        margin-bottom: 15px;
+        background: #fff;
+        box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        padding: 30px;
+    }
+    .login-form h2 {
+        margin: 0 0 25px;
+    }
+    .form-control, .btn {
+        min-height: 38px;
+        border-radius: 2px;
+    }
+    .form-group{
+        margin-bottom: 20px;
+    }
+    .form-select{
+        border-radius: 2px;
+        min-height: 38px;
+    }
+    .btn {
+        font-size: 15px;
+        font-weight: bold;
+    }
+</style>
+
+<body>
+
+
+
+<div class="login-form">
+    <form th:action="@{/addRoom}" th:object="${room}" method="post">
+        <h2 class="text-center">Создать Комнату</h2>
+        <div class="form-group">
+            <input class="form-control" type="text" th:field="*{name}" id="name" placeholder="Название Комнаты" required>
+        </div>
+        <div class="form-group">
+            <select class="form-select form-control" id="countryCode" th:field="*{countryCode}">
+                <option th:each="country : ${countries}" th:value="${country.code}" th:utext="${country.name}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn  btn-block  btn-outline-info add-new">Создать</button>
+        </div>
+    </form>
+    <p class="text-center text-info"><a href="/">Главная Страница</a></p>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"></script>
+</body>
+
+</html>
