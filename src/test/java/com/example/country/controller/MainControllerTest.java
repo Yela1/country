@@ -2,14 +2,12 @@ package com.example.country.controller;
 
 import com.example.country.models.Country;
 import com.example.country.models.Room;
-import com.example.country.repository.CountryRepository;
+import com.example.country.service.CountryService;
 import com.example.country.service.RoomService;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -30,7 +28,7 @@ public class MainControllerTest {
     private RoomService roomService;
 
     @MockBean
-    private CountryRepository countryRepository;
+    private CountryService countryService;
 
 
     @Test
@@ -57,6 +55,7 @@ public class MainControllerTest {
         Room room = new Room(1L,"kz",true,"KZ");
         when(roomService.get(1L)).thenReturn(room);
         Room exceptedRoom = roomService.get(room.getId());
+        when(roomService.checkIp(exceptedRoom)).thenReturn(true);
         this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -85,8 +84,8 @@ public class MainControllerTest {
         Country c1 = new Country("Kz","Kz");
         Country c2 = new Country("Ru","Ru");
         countries.add(c1); countries.add(c2);
-        when(countryRepository.findAll()).thenReturn(countries);
-        List<Country> excepted= countryRepository.findAll();
+        when(countryService.getAll()).thenReturn(countries);
+        List<Country> excepted= countryService.getAll();
         this.mockMvc
                 .perform(MockMvcRequestBuilders.get("/add"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -96,7 +95,6 @@ public class MainControllerTest {
 
     @Test
     public void addRoom() throws Exception{
-        Room room = new Room(1L,"KZ",true,"KZ");
         this.mockMvc
                 .perform(MockMvcRequestBuilders.post("/addRoom"))
                 .andExpect(MockMvcResultMatchers.status().isFound())
@@ -105,8 +103,6 @@ public class MainControllerTest {
     }
     @Test
     public void delete() throws Exception{
-        Room room = new Room(1L,"KZ",true,"KZ");
-        String s = "sldsd";
         this.mockMvc
                 .perform(MockMvcRequestBuilders.post("/delete/1"))
                 .andExpect(MockMvcResultMatchers.status().isFound())

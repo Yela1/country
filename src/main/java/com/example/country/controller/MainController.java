@@ -1,30 +1,23 @@
 package com.example.country.controller;
 
-import com.example.country.exception.RoomNotFoundException;
 import com.example.country.models.Room;
-import com.example.country.repository.CountryRepository;
+import com.example.country.service.CountryService;
 import com.example.country.service.RoomService;
-import com.maxmind.geoip2.WebServiceClient;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.InetAddress;
-import java.net.URL;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
-
     private final RoomService roomService;
-    private final CountryRepository countryRepository;
+    private final CountryService countryService;
 
 
     @GetMapping("/")
@@ -36,23 +29,11 @@ public class MainController {
     @GetMapping("/{id}")
     public String get(@PathVariable("id") Long id,
                       Model model) throws IOException {
-        Room room;
-        try {
-            room = roomService.get(id);
-        }catch(RoomNotFoundException e){
-            model.addAttribute("error", "No such file");
-            return "error";
-        }
-        try (WebServiceClient client = new WebServiceClient.Builder(565526, "MxP8cy6HjNKNHiHU").host("geolite.info").build()) {
+        Room room = roomService.get(id);
 
-            InetAddress ipAddress = getIpADress();
-            String IsoCode = client.country(ipAddress).getCountry().getIsoCode();
-            if (!IsoCode.equals(room.getCountryCode())) {
-                model.addAttribute("error", "Permission Denied");
-                return "error";
-            }
-        } catch (GeoIp2Exception e) {
-            e.printStackTrace();
+        if(!roomService.checkIp(room)){
+            model.addAttribute("error","Permission Denied");
+            return "error";
         }
         model.addAttribute("room", room);
         return "room";
@@ -60,7 +41,7 @@ public class MainController {
 
     @GetMapping("/add")
     public String showSignUpForm(Model model, Room room) {
-        model.addAttribute("countries", countryRepository.findAll());
+        model.addAttribute("countries", countryService.getAll());
         return "add-room";
     }
 
@@ -82,12 +63,6 @@ public class MainController {
         return new ModelAndView("redirect:/");
     }
 
-
-    private static InetAddress getIpADress() throws IOException {
-        URL url = new URL("https://checkip.amazonaws.com/");
-        BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-        return InetAddress.getByName(br.lines().collect(Collectors.joining()));
-    }
 
 
 }
